@@ -1,11 +1,9 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:maab/src/common/constant/app_colors.dart';
+import 'package:maab/src/common/util/context_util.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/data/service.dart';
-import '../../common/model/product_model.dart';
 import '../widgets/custom_button.dart';
 import 'add_product_page.dart';
 import 'product_page.dart';
@@ -19,15 +17,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   @override
-  void initState() {
-    super.initState();
-    response = ProductService.getReport() ?? "";
-    log(response.toString());
-  }
-
-  String response = "";
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: CustomButton(
@@ -37,50 +26,60 @@ class _MainPageState extends State<MainPage> {
             builder: (context) => const AddProductPage(),
           ),
         ),
-        size: const Size(40, 40),
+        size: const Size(55, 55),
         shape: const CircleBorder(),
         child: const Center(
           child: Icon(Icons.add),
         ),
       ),
       appBar: AppBar(
-        toolbarHeight: 50,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Image.asset("assets/icons/image 3 (1).png"),
-        ),
-        actions: [
-          CustomButton(
-            onPressed: () {},
-            size: const Size(40, 40),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: SvgPicture.asset(
-              "assets/icons/Vector.svg",
-            ),
+        title: Text(
+          "Reports",
+          style: context.textTheme.titleLarge!.copyWith(
+            fontWeight: FontWeight.w700,
           ),
-        ],
+        ),
       ),
       body: Scaffold(
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView(
-              children: List.generate(
-                1,
-                (i) => ListTile(
-                  title: Text(DateTime.now().toString()),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProductPage(
-                        currentProduct:
-                            ProductModel.fromJson(jsonDecode(response)).name,
+            child: Consumer<ProductService>(
+              builder: (context, value, child) {
+                final reports = value.getReports;
+                return ListView.separated(
+                  itemCount: reports.length,
+                  itemBuilder: (context, index) {
+                    final report = reports.elementAt(index);
+                    return ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                      tileColor: productColor,
+                      splashColor: productColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      title: Text(
+                        "${report.date.month}-${report.date.day}-${report.date.year}",
+                        style: context.textTheme.titleLarge,
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductPage(date: report.date),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                );
+              },
             ),
           ),
         ),

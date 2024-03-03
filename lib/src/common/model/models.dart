@@ -2,6 +2,7 @@ import 'product_model.dart';
 import 'resource_model.dart';
 
 class ReportModel {
+  DateTime date;
   String name;
   List<ProductModel>? productList;
   List<ResourceModel>? resourceList;
@@ -10,7 +11,8 @@ class ReportModel {
     required this.name,
     this.productList,
     this.resourceList,
-  });
+    DateTime? date,
+  }) : date = date ?? DateTime.now();
 
   ReportModel copyWith({
     String? name,
@@ -21,6 +23,7 @@ class ReportModel {
         name: this.name,
         productList: this.productList,
         resourceList: this.resourceList,
+        date: date,
       );
 
   factory ReportModel.fromJson(Map<String, Object?> json) => ReportModel(
@@ -35,6 +38,7 @@ class ReportModel {
                 .map(ResourceModel.fromJson)
                 .toList()
             : [],
+        date: json['date'] != null ? DateTime.parse(json['date'] as String) : null
       );
 
   @override
@@ -44,8 +48,9 @@ class ReportModel {
 
   Map<String, Object?> toJson() => {
         "name": name,
-        "productList": productList,
-        "resourceList": resourceList,
+        "productList": (productList ?? [] ).map((e) => e.toJson()).toList(),
+        "resourceList": (resourceList ?? []).map((e) => e.toJson()).toList(),
+        "date": date.toIso8601String(),
       };
 
 

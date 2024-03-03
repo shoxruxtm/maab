@@ -1,13 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:maab/src/common/util/context_util.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/data/service.dart';
 import '../../common/model/models.dart';
 import '../../common/model/product_model.dart';
 import '../../common/model/resource_model.dart';
 import '../widgets/custom_button.dart';
-import 'main_page.dart';
+import 'add_product_mixin.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({Key? key}) : super(key: key);
@@ -16,76 +18,19 @@ class AddProductPage extends StatefulWidget {
   State<AddProductPage> createState() => _AddProductPageState();
 }
 
-class _AddProductPageState extends State<AddProductPage> {
-  static TextEditingController textEditingController = TextEditingController();
-  static TextEditingController textEditingController1 = TextEditingController();
-  static TextEditingController textEditingController2 = TextEditingController();
-  static TextEditingController textEditingController3 = TextEditingController();
-  static TextEditingController textEditingController4 = TextEditingController();
-  static TextEditingController textEditingController5 = TextEditingController();
-  static TextEditingController textEditingController6 = TextEditingController();
-  static TextEditingController textEditingController7 = TextEditingController();
-
-  TextEditingController controller = TextEditingController();
-
-  final ExpansionTileController expansionTileController =
-      ExpansionTileController();
-
-  String name = "";
-
-  List<String> names = ["Odil", "Shaxzod", "Said", "Rasul"];
-
-  List productControllers = [
-    textEditingController,
-    textEditingController1,
-    textEditingController2,
-    textEditingController3,
-  ];
-  List resourceController = [
-    textEditingController4,
-    textEditingController5,
-    textEditingController6,
-    textEditingController7,
-  ];
-
-  @override
-  void initState() {
-    textEditingController = TextEditingController();
-    textEditingController1 = TextEditingController();
-    textEditingController2 = TextEditingController();
-    textEditingController3 = TextEditingController();
-    textEditingController4 = TextEditingController();
-    textEditingController5 = TextEditingController();
-    textEditingController6 = TextEditingController();
-    textEditingController7 = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    textEditingController.dispose();
-    textEditingController1.dispose();
-    textEditingController2.dispose();
-    textEditingController3.dispose();
-    textEditingController4.dispose();
-    textEditingController5.dispose();
-    textEditingController6.dispose();
-    textEditingController7.dispose();
-    controller.dispose();
-  }
-
-  List<ProductModel> productList = [];
-  List<ResourceModel> resourceList = [];
-
-  List<String> products = ["table", "chair", "Vanna", "gorshok"];
-  List<String> resource = ["pp", "lp", "kk", "lo"];
+class _AddProductPageState extends State<AddProductPage> with AddProductMixin {
+  final date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Product"),
+        title: Text(
+          "Report Create(${date.month}-${date.day}-${date.year})",
+          style: context.textTheme.titleLarge!.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -93,57 +38,93 @@ class _AddProductPageState extends State<AddProductPage> {
           child: ListView(
             children: [
               ExpansionTile(
-                  controller: expansionTileController,
-                  shape: const RoundedRectangleBorder(side: BorderSide.none),
-                  title: const Text("Employes"),
-                  children: List.generate(names.length, (i) {
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                collapsedBackgroundColor: Colors.black12,
+                backgroundColor: Colors.black12,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                childrenPadding: const EdgeInsets.only(left: 18),
+                expandedAlignment: Alignment.centerLeft,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                controller: expansionTileController,
+                title: ValueListenableBuilder(
+                    valueListenable: name,
+                    builder: (context, value, _) {
+                      return Text(
+                        value ?? "Employes",
+                        style: context.textTheme.titleLarge,
+                      );
+                    }),
+                children: List.generate(
+                  names.length,
+                  (i) {
                     return SizedBox(
                       height: 30,
                       child: GestureDetector(
                         onTap: () {
-                          name = names[i];
+                          name.value = names[i];
                           expansionTileController.collapse();
                         },
-                        child: Text(names[i]),
+                        child: Text(
+                          names[i],
+                          style: context.textTheme.titleLarge,
+                        ),
                       ),
                     );
-                  })),
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 20,
               ),
               ExpansionTile(
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide.none,
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                title: const Text("Product"),
+                collapsedBackgroundColor: Colors.black12,
+                backgroundColor: Colors.black12,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: Text(
+                  "Product",
+                  style: context.textTheme.titleLarge,
+                ),
                 children: List.generate(products.length, (i) {
                   return SizedBox(
                     height: 40,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(products[i]),
+                        Text(
+                          products[i],
+                          style: context.textTheme.titleLarge,
+                        ),
                         const SizedBox(
                           width: 150,
                         ),
-                        SizedBox(
-                          height: 20,
-                          width: 60,
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            onTap: () {
-                              controller = TextEditingController();
-                            },
-                            controller: productControllers[i],
-                            onTapOutside: (event) {
-                              final productModel = ProductModel(
-                                name: resource[i],
-                                itemCount:
-                                    int.tryParse(productControllers[i].text) ??
-                                        0,
-                              );
-                              productList.add(productModel);
-                            },
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 60,
+                              child: TextField(
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.number,
+                                controller: productControllers[i],
+                              ),
+                            ),
+                            Text(
+                              "items",
+                              style: context.textTheme.titleMedium,
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -152,36 +133,49 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 20),
               ExpansionTile(
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide.none,
+                collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                title: const Text("Resource"),
+                collapsedBackgroundColor: Colors.black12,
+                backgroundColor: Colors.black12,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: Text(
+                  "Resource",
+                  style: context.textTheme.titleLarge,
+                ),
                 children: List.generate(
                   resource.length,
                   (i) => SizedBox(
                     height: 40,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(resource[i]),
+                        Text(
+                          resource[i],
+                          style: context.textTheme.titleLarge,
+                        ),
                         const SizedBox(
                           width: 150,
                         ),
-                        SizedBox(
-                          height: 20,
-                          width: 60,
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            controller: resourceController[i],
-                            onTapOutside: (event) {
-                              final resourceModel = ResourceModel(
-                                name: resource[i],
-                                amount: double.tryParse(
-                                        resourceController[i].text) ??
-                                    0.0,
-                              );
-                              resourceList.add(resourceModel);
-                            },
-                          ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 60,
+                              child: TextField(
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.number,
+                                controller: resourceController[i],
+                              ),
+                            ),
+                            Text(
+                              "kg",
+                              style: context.textTheme.titleMedium,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -190,21 +184,53 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 50),
               CustomButton(
-                child: const Text("done"),
+                size: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  "Add Report",
+                  style: context.textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
                 onPressed: () {
+                  if (name.value == null) {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        const SnackBar(
+                          content: Text("Employes is not selected"),
+                        ),
+                      );
+                    return;
+                  }
                   ReportModel report = ReportModel(
-                    name: name,
-                    resourceList: resourceList,
-                    productList: productList,
+                    name: name.value!,
+                    resourceList: resource
+                        .map(
+                          (e) => ResourceModel(
+                            name: e,
+                            amount: double.tryParse(resourceController
+                                    .elementAt(resource.indexOf(e))
+                                    .text) ??
+                                0.0,
+                          ),
+                        )
+                        .toList(),
+                    productList: products.map((e) {
+                      return ProductModel(
+                        name: e,
+                        itemCount: int.tryParse(productControllers
+                                .elementAt(products.indexOf(e))
+                                .text) ??
+                            0,
+                      );
+                    }).toList(),
                   );
                   log("reports => $report");
-                  ProductService.createReport(newReport: report);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MainPage(),
-                    ),
-                  );
+                  context.read<ProductService>().addReport(report);
+                  Navigator.pop(context);
                 },
               ),
             ],
