@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:maab/src/common/constant/app_colors.dart';
-import 'package:maab/src/common/util/context_util.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
+import '../../common/constant/app_colors.dart';
 import '../../common/data/service.dart';
+import '../../common/util/context_util.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key, required this.date});
@@ -70,7 +70,7 @@ class _ProductPageState extends State<ProductPage> {
                               height: 40,
                               child: ListTile(
                                 title: Text(
-                                  product.name,
+                                  product.name!,
                                   style: context.textTheme.titleMedium,
                                 ),
                                 trailing: Text(
@@ -100,7 +100,7 @@ class _ProductPageState extends State<ProductPage> {
                               height: 40,
                               child: ListTile(
                                 title: Text(
-                                  product.name,
+                                  product.name!,
                                   style: context.textTheme.titleMedium,
                                 ),
                                 trailing: Text(

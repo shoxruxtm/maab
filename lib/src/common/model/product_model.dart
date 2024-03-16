@@ -1,10 +1,10 @@
 class ProductModel {
-  String name;
+  String? name;
   int? itemCount;
 
   ProductModel({
-    required this.name,
-    required this.itemCount,
+    this.name,
+    this.itemCount,
   });
 
   ProductModel copyWith({
@@ -30,4 +30,8 @@ class ProductModel {
         "name": name,
         "itemCount": itemCount,
       };
+
+  bool validate() {
+    return name != null && itemCount != null;
+  }
 }

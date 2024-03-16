@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:maab/src/common/model/product_model.dart';
+import 'package:maab/src/common/model/resource_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/models.dart';
@@ -64,7 +68,10 @@ class ProductService with ChangeNotifier {
     _reports ??= (_preferences.getStringList(_reportKey) ?? [])
         .map((e) => AllReports.fromJson(jsonDecode(e)))
         .toList();
-    return _reports!..sort((a, b) => a.date.compareTo(b.date),);
+    return _reports!
+      ..sort(
+        (a, b) => a.date.compareTo(b.date),
+      );
   }
 }
 
@@ -92,5 +99,97 @@ class AllReports {
           .toList(),
       date: map['date'] != null ? DateTime.parse(map['date'] as String) : null,
     );
+  }
+}
+
+class ProductGenerate {
+  final TextEditingController textEditingController;
+  ProductModel product;
+   ValueNotifier<String?> name;
+
+  ProductGenerate()
+      : textEditingController = TextEditingController(text: "0"),
+        product = ProductModel(),name=ValueNotifier(null);
+
+  void dispose() {
+    textEditingController.dispose();
+    name.dispose();
+  }
+
+  ProductModel? validate() {
+    if (textEditingController.text.isNotEmpty) {
+      product.itemCount = int.tryParse(textEditingController.text) ?? 0;
+    }
+    product.name = name.value;
+    return product.validate() ? product : null;
+  }
+
+  void setName(String name) {
+    this.name.value = name;
+  }
+}
+
+class ResourceGenerate {
+  final TextEditingController textEditingController;
+  ResourceModel resource;
+  ValueNotifier<String?> name;
+
+  ResourceGenerate()
+      : textEditingController = TextEditingController(text: "0"),
+        resource = ResourceModel(), name = ValueNotifier(null);
+
+  void dispose() {
+    textEditingController.dispose();
+    name.dispose();
+  }
+
+  ResourceModel? validate() {
+    if (textEditingController.text.isNotEmpty) {
+      resource.amount = double.tryParse(textEditingController.text) ?? 0;
+    }
+    resource.name = name.value;
+    return resource.validate() ? resource : null;
+  }
+
+  void setName(String name) {
+    this.name.value = name;
+  }
+}
+
+extension ProductListExtension on List<ProductGenerate> {
+  List<ProductModel> toProductList() {
+    return map((e) {
+      final product = e.validate();
+      if (product == null) {
+        throw "Barcha productlarga qiymat berish kerak";
+      } else {
+        return product;
+      }
+    }).toList();
+  }
+
+  void dispose(){
+    for(var i in this){
+      i.dispose();
+    }
+  }
+}
+
+extension ResourceListExtension on List<ResourceGenerate> {
+  List<ResourceModel> toResourceList() {
+    return map((e) {
+      final resource = e.validate();
+      if (resource == null) {
+        throw "Barcha resourcelarga qiymat berish kerak";
+      } else {
+        return resource;
+      }
+    }).toList();
+  }
+
+  void dispose(){
+    for(var i in this){
+      i.dispose();
+    }
   }
 }

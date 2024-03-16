@@ -1,10 +1,10 @@
 class ResourceModel {
-  String name;
-  double amount;
+  String? name;
+  double? amount;
 
   ResourceModel({
-    required this.name,
-    required this.amount,
+    this.name,
+    this.amount,
   });
 
   ResourceModel copyWith({
@@ -30,4 +30,8 @@ class ResourceModel {
     "name":name,
     "amount":amount,
   };
+
+  bool validate() {
+    return name != null && amount != null;
+  }
 }

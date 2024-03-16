@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../features/screens/main_page.dart';
+import '../../features/screens/reports_page.dart';
 import '../data/service.dart';
 
 class MyApp extends StatefulWidget {
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             useMaterial3: true,
           ),
-          home: const MainPage(),
+          home: const ReportsPage(),
         );
       },
     );

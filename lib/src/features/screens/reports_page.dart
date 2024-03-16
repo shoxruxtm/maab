@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:maab/src/common/constant/app_colors.dart';
-import 'package:maab/src/common/util/context_util.dart';
+import 'package:maab/src/features/screens/add_reports.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/constant/app_colors.dart';
+import '../../common/util/context_util.dart';
 import '../../common/data/service.dart';
 import '../widgets/custom_button.dart';
-import 'add_product_page.dart';
 import 'product_page.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class ReportsPage extends StatefulWidget {
+  const ReportsPage({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<ReportsPage> createState() => _ReportsPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _ReportsPageState extends State<ReportsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const AddProductPage(),
+            builder: (context) => const AddReportsPage(),
           ),
         ),
         size: const Size(55, 55),
